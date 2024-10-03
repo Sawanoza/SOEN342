@@ -12,7 +12,7 @@ Dr. Constantinos Constantinides
 (TBA)
 
 ### Authors:
-Marc-Yves Malchev (Sawanoza) 40265238
+Marc-Yves Malchev (Sawanoza) 40265238  
 Mohamed Gueye (MomoG221) 40247476 
 
 ## Additional Documentation:
