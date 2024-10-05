@@ -13,7 +13,7 @@ Dr. Constantinos Constantinides
 
 ### Authors:
 Marc-Yves Malchev (Sawanoza) 40265238  
-Mohamed Gueye (MomoG221) 40247476 
+Mohamed Gueye (MomoG221) 40247476 - mohamed.gueye88@gmail.com
 
 ## Additional Documentation:
 See [Wiki]()
