@@ -9,7 +9,7 @@ Project for the SOEN342 course at Concordia University Canada for the Fall 2024 
 Dr. Constantinos Constantinides
 
 ### Teaching Assistant:
-(TBA)
+Aly Hussein (Aly-Hussein)
 
 ### Authors:
 Marc-Yves Malchev (Sawanoza) 40265238  
