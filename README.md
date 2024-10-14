@@ -12,7 +12,7 @@ Dr. Constantinos Constantinides
 Aly Hussein (Aly-Hussein)
 
 ### Authors:
-Marc-Yves Malchev (Sawanoza) 40265238  
+Marc-Yves Malchev (Sawanoza) 40265238 - marc_a00@hotmail.com  
 Mohamed Gueye (MomoG221) 40247476 - mohamed.gueye88@gmail.com
 
 ## Additional Documentation:
