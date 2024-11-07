@@ -23,42 +23,33 @@ public class Console {
 
             // --------------- 1.1 LOGIN ---------------
             if (menuChoice == 1) {
-                boolean loginSuccessful = login(scan);
-                if (loginSuccessful) {
+                String role = login(scan);
+                if (role != null) {
                     // ------------------------------- 2. APPLICATION ---------------------------------
                     boolean userLoggedIn = true;
                     while (userLoggedIn) {
-                        System.out.println("\nChoose what operation you would like to do:");
-                        System.out.println("1. Log Out");
-                        System.out.println("2. See all accounts");
-
-                        int choice = getUserChoice(scan, 1, 2);
-
-                        switch (choice) {
-                            case 1:
-                                userLoggedIn = false; // exit application layer
-                                break;
-
-                            case 2:
-                                account.getAccounts();
-                                break;
-
-                            default:
-                                break;
+                        if (role.equals("user")) {
+                            userMenu(scan);
+                        } else if (role.equals("instructor")) {
+                            instructorMenu(scan);
+                        } else if (role.equals("admin")) {
+                            adminMenu(scan);
                         }
+                        userLoggedIn = false; // log out
                     }
                 } else {
                     // if login fails, go back to the main menu
-                    System.out.println("Returning to main menu.");
+                    System.out.println("Returning to main menu...");
                 }
-            } 
+            }
             // --------------- 1.2 CREATE ACCOUNT ---------------
             else if (menuChoice == 2) {
                 boolean accountCreated = createAccount(scan);
                 if (accountCreated) {
-                    System.out.println("Account created successfully!");
+                    System.out.println("\nAccount created successfully!");
                 } else {
-                    System.out.println("Error creating account. Please try again.");
+                    System.out.println("\nError creating account. Please try again.");
+                    System.out.println("Returning to main menu...");
                 }
             }
             // --------------- 1.3 QUIT APPLICATION ---------------
@@ -94,22 +85,22 @@ public class Console {
 
 
     // METHOD TO HANDLE USER LOGIN
-    private boolean login(Scanner scan) {
+    private String login(Scanner scan) {
         System.out.print("Enter your email: ");
         String email = scan.nextLine();
-        
+
         System.out.print("Enter your password: ");
         String password = scan.nextLine();
 
-        // check if the credentials are valid by querying the database
-        boolean isAuthenticated = account.authenticateUser(email, password);
+        //check credentials and get role
+        String role = account.authenticateUser(email, password);
 
-        if (isAuthenticated) {
-            System.out.println("Login successful!");
-            return true;
+        if (role != null) {
+            System.out.println("Login successful! Role: " + role);
+            return role;
         } else {
             System.out.println("\nInvalid email or password. Please try again.");
-            return false;
+            return null;
         }
     }
 
@@ -118,18 +109,87 @@ public class Console {
     private boolean createAccount(Scanner scan) {
         System.out.print("Enter your name: ");
         String name = scan.nextLine();
-        
+
         System.out.print("Enter your email: ");
         String email = scan.nextLine();
-        
+
         System.out.print("Enter your phone number: ");
         String phoneNumber = scan.nextLine();
-        
+
         System.out.print("Enter your password: ");
         String password = scan.nextLine();
 
-        boolean isCreated = account.createAccount(name, email, phoneNumber, password);
+        System.out.print("Enter your role (user, instructor): ");
+        String role = scan.nextLine();
 
-        return isCreated;
+        return account.createAccount(name, email, phoneNumber, password, role);
     }
+
+
+    // MENU FOR REGULAR USERS
+    private void userMenu(Scanner scan) {
+        boolean loggedIn = true;
+        while (loggedIn) {
+            System.out.println("\nUser Menu:");
+            System.out.println("1. Log Out");
+            System.out.println("2. ");
+
+            int choice = getUserChoice(scan, 1, 2);
+            switch (choice) {
+                case 1:
+                    loggedIn = false;
+                    break;
+                case 2:
+                    /* */
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    // MENU FOR INSTRUCTORS
+    private void instructorMenu(Scanner scan) {
+        boolean loggedIn = true;
+        while (loggedIn) {
+            System.out.println("\nInstructor Menu:");
+            System.out.println("1. Log Out");
+            System.out.println("2. ");
+
+            int choice = getUserChoice(scan, 1, 3);
+            switch (choice) {
+                case 1:
+                    loggedIn = false;
+                    break;
+                case 2:
+                    /* */
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    // MENU FOR ADMINS
+    private void adminMenu(Scanner scan) {
+        boolean loggedIn = true;
+        while (loggedIn) {
+            System.out.println("\nAdmin Menu:");
+            System.out.println("1. Log Out");
+            System.out.println("2. ");
+
+            int choice = getUserChoice(scan, 1, 3);
+            switch (choice) {
+                case 1:
+                    loggedIn = false;
+                    break;
+                case 2:
+                    /* */
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
 }

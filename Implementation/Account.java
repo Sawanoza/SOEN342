@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class Account {
     // SQLite database file path
-    private String url = "jdbc:sqlite:mydb.db";
+    private String url = "jdbc:sqlite:Implementation/mydb.db";
         
 
 
@@ -31,34 +31,36 @@ public class Account {
 
 
     //method to check if the user exists with the provided email and password
-    public boolean authenticateUser(String email, String password) {
-        String query = "SELECT * FROM accounts WHERE email = ? AND password = ?";
+    public String authenticateUser(String email, String password) {
+        String query = "SELECT role FROM accounts WHERE email = ? AND password = ?";
         
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement(query)) {
              
-            //set parameters for the query
+            // Set parameters for the query
             stmt.setString(1, email);
             stmt.setString(2, password);
-
-            //execute query and check if result is found
+    
+            // Execute query and check if result is found
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return true;  //user found with matching credentials
+                    // Return the role if a matching user is found
+                    return rs.getString("role");  
                 } else {
-                    return false; //no match found
+                    // No match found
+                    return null;
                 }
             }
         } catch (SQLException e) {
             System.out.println("SQL Error: " + e.getMessage());
-            return false;
+            return null;
         }
     }
 
 
     //method to create a new account
-    public boolean createAccount(String name, String email, String phoneNumber, String password) {
-        String query = "INSERT INTO accounts (name, email, phoneNumber, password) VALUES (?, ?, ?, ?)";
+    public boolean createAccount(String name, String email, String phoneNumber, String password, String role) {
+        String query = "INSERT INTO accounts (name, email, phoneNumber, password,role) VALUES (?, ?, ?, ?, ?)";
         
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -73,8 +75,7 @@ public class Account {
             int rowsAffected = stmt.executeUpdate();
             return rowsAffected > 0; //return true if the insertion was successful
         } catch (SQLException e) {
-            System.out.println("SQL Error: " + e.getMessage());
-            return false; //return false if an error occurred during insertion
+            return false;
         }
     }
 
