@@ -96,7 +96,7 @@ public class Console {
         String role = account.authenticateUser(email, password);
 
         if (role != null) {
-            System.out.println("Login successful! Role: " + role);
+            System.out.println("\nLogin successful! Role: " + role);
             return role;
         } else {
             System.out.println("\nInvalid email or password. Please try again.");
@@ -176,7 +176,7 @@ public class Console {
         while (loggedIn) {
             System.out.println("\nAdmin Menu:");
             System.out.println("1. Log Out");
-            System.out.println("2. ");
+            System.out.println("2. View all accounts");
 
             int choice = getUserChoice(scan, 1, 3);
             switch (choice) {
@@ -184,7 +184,7 @@ public class Console {
                     loggedIn = false;
                     break;
                 case 2:
-                    /* */
+                    account.getAccounts();
                     break;
                 default:
                     break;
