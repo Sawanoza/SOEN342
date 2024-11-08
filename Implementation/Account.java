@@ -70,6 +70,7 @@ public class Account {
             stmt.setString(2, email);
             stmt.setString(3, phoneNumber);
             stmt.setString(4, password);
+            stmt.setString(5, role);
             
             //execute the query to insert the new user
             int rowsAffected = stmt.executeUpdate();
