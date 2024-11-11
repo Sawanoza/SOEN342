@@ -8,8 +8,8 @@ public class Console {
     }
 
     public void startApplication() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        // System.out.print("\033[H\033[2J");
+        // System.out.flush();
         System.out.println("Welcome to LessonHub!");
         Scanner scan = new Scanner(System.in);
         boolean applicationLoop = true;
@@ -63,6 +63,82 @@ public class Console {
 
 
 
+        // MENU FOR REGULAR USERS
+        private void userMenu(Scanner scan) {
+            boolean loggedIn = true;
+            while (loggedIn) {
+                System.out.println("\nUser Menu:");
+                System.out.println("1. Log Out");
+                System.out.println("2. ");
+    
+                int choice = getUserChoice(scan, 1, 2);
+                switch (choice) {
+                    case 1:
+                        loggedIn = false;
+                        break;
+                    case 2:
+                        /* */
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    
+        // MENU FOR INSTRUCTORS
+        private void instructorMenu(Scanner scan) {
+            boolean loggedIn = true;
+            while (loggedIn) {
+                System.out.println("\nInstructor Menu:");
+                System.out.println("1. Log Out");
+                System.out.println("2. ");
+    
+                int choice = getUserChoice(scan, 1, 3);
+                switch (choice) {
+                    case 1:
+                        loggedIn = false;
+                        break;
+                    case 2:
+                        /* */
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    
+        // MENU FOR ADMINS
+        private void adminMenu(Scanner scan) {
+            boolean loggedIn = true;
+            while (loggedIn) {
+                System.out.println("\nAdmin Menu:");
+                System.out.println("1. Log Out");
+                System.out.println("2. View all accounts");
+                System.out.println("3. Delete an account");
+                System.out.println("3. View all offerings");
+                System.out.println("4. View all lessons");
+                System.out.println("5. View bookings");
+    
+                int choice = getUserChoice(scan, 1, 5);
+                switch (choice) {
+                    case 1:
+                        loggedIn = false;
+                        break;
+                    case 2:
+                        account.getAccounts();
+                        break;
+                    case 3:
+                        System.out.print("Account ID for deletion: ");
+                        account.deleteAccount(Integer.parseInt(scan.nextLine()));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+
+
     // METHOD FOR USER CHOSING A NUMBER IN MENU
     private int getUserChoice(Scanner scan, int min, int max) {
         int choice = 0;
@@ -78,8 +154,8 @@ public class Console {
             }
         }
 
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        // System.out.print("\033[H\033[2J");
+        // System.out.flush();
         return choice;
     }
 
@@ -126,70 +202,6 @@ public class Console {
     }
 
 
-    // MENU FOR REGULAR USERS
-    private void userMenu(Scanner scan) {
-        boolean loggedIn = true;
-        while (loggedIn) {
-            System.out.println("\nUser Menu:");
-            System.out.println("1. Log Out");
-            System.out.println("2. ");
 
-            int choice = getUserChoice(scan, 1, 2);
-            switch (choice) {
-                case 1:
-                    loggedIn = false;
-                    break;
-                case 2:
-                    /* */
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    // MENU FOR INSTRUCTORS
-    private void instructorMenu(Scanner scan) {
-        boolean loggedIn = true;
-        while (loggedIn) {
-            System.out.println("\nInstructor Menu:");
-            System.out.println("1. Log Out");
-            System.out.println("2. ");
-
-            int choice = getUserChoice(scan, 1, 3);
-            switch (choice) {
-                case 1:
-                    loggedIn = false;
-                    break;
-                case 2:
-                    /* */
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    // MENU FOR ADMINS
-    private void adminMenu(Scanner scan) {
-        boolean loggedIn = true;
-        while (loggedIn) {
-            System.out.println("\nAdmin Menu:");
-            System.out.println("1. Log Out");
-            System.out.println("2. View all accounts");
-
-            int choice = getUserChoice(scan, 1, 3);
-            switch (choice) {
-                case 1:
-                    loggedIn = false;
-                    break;
-                case 2:
-                    account.getAccounts();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
 
 }

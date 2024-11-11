@@ -41,10 +41,10 @@ public class Account {
             stmt.setString(1, email);
             stmt.setString(2, password);
     
-            // Execute query and check if result is found
+            // Execute qu1ery
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    // Return the role if a matching user is found
+                    // return the role if a matching user is found
                     return rs.getString("role");  
                 } else {
                     // No match found
@@ -74,8 +74,38 @@ public class Account {
             
             //execute the query to insert the new user
             int rowsAffected = stmt.executeUpdate();
-            return rowsAffected > 0; //return true if the insertion was successful
+            return rowsAffected > 0;
         } catch (SQLException e) {
+            return false;
+        }
+    }
+
+
+    //method to delete an account
+    public boolean deleteAccount(int accountId) {
+        // dont let admin delete itself
+        if (accountId == 1) {
+            System.out.println("ERROR: Cannot delete Admin Account!");
+            return false;
+        }
+        
+        String deleteQuery = "DELETE FROM accounts WHERE id = ?";
+
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement(deleteQuery)) {
+
+            stmt.setInt(1, accountId);
+            int rowsAffected = stmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Account deleted successfully.");
+                return true;
+            } else {
+                System.out.println("Account not found.");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
             return false;
         }
     }
