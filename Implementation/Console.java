@@ -131,6 +131,12 @@ public class Console {
                         System.out.print("Account ID for deletion: ");
                         account.deleteAccount(Integer.parseInt(scan.nextLine()));
                         break;
+                    case 4:
+                        //
+                        break;
+                    case 5:
+                        // 
+                        break;
                     default:
                         break;
                 }
