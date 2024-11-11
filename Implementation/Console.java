@@ -28,8 +28,8 @@ public class Console {
                     // ------------------------------- 2. APPLICATION ---------------------------------
                     boolean userLoggedIn = true;
                     while (userLoggedIn) {
-                        if (role.equals("user")) {
-                            userMenu(scan);
+                        if (role.equals("client")) {
+                            clientMenu(scan);
                         } else if (role.equals("instructor")) {
                             instructorMenu(scan);
                         } else if (role.equals("admin")) {
@@ -64,12 +64,12 @@ public class Console {
 
 
         // MENU FOR REGULAR USERS
-        private void userMenu(Scanner scan) {
+        private void clientMenu(Scanner scan) {
             boolean loggedIn = true;
             while (loggedIn) {
                 System.out.println("\nUser Menu:");
                 System.out.println("1. Log Out");
-                System.out.println("2. ");
+                System.out.println("2. Become a Guardian");
     
                 int choice = getUserChoice(scan, 1, 2);
                 switch (choice) {
@@ -77,7 +77,7 @@ public class Console {
                         loggedIn = false;
                         break;
                     case 2:
-                        /* */
+                        createUnderageAccount(scan);
                         break;
                     default:
                         break;
@@ -114,12 +114,14 @@ public class Console {
                 System.out.println("\nAdmin Menu:");
                 System.out.println("1. Log Out");
                 System.out.println("2. View all accounts");
-                System.out.println("3. Delete an account");
-                System.out.println("3. View all offerings");
-                System.out.println("4. View all lessons");
-                System.out.println("5. View bookings");
+                System.out.println("3. View all client accounts");
+                System.out.println("4. View all instructor accounts");
+                System.out.println("5. Delete an account");
+                System.out.println("6. View all offerings");
+                System.out.println("7. View all lessons");
+                System.out.println("8. View bookings");
     
-                int choice = getUserChoice(scan, 1, 5);
+                int choice = getUserChoice(scan, 1, 8);
                 switch (choice) {
                     case 1:
                         loggedIn = false;
@@ -128,8 +130,23 @@ public class Console {
                         account.getAccounts();
                         break;
                     case 3:
+                        account.getClients();
+                        break;
+                    case 4:
+                        account.getInstructors();
+                        break;
+                    case 5:
                         System.out.print("Account ID for deletion: ");
                         account.deleteAccount(Integer.parseInt(scan.nextLine()));
+                        break;
+                    case 6:
+                        // MISSING
+                        break;
+                    case 7:
+                        // MISSING
+                        break;
+                    case 8:
+                        // MISSING
                         break;
                     default:
                         break;
@@ -172,7 +189,7 @@ public class Console {
         String role = account.authenticateUser(email, password);
 
         if (role != null) {
-            System.out.println("\nLogin successful! Role: " + role);
+            System.out.println("\nLogin successful!");
             return role;
         } else {
             System.out.println("\nInvalid email or password. Please try again.");
@@ -182,24 +199,89 @@ public class Console {
 
 
     // METHOD TO HANDLE ACCOUNT CREATION
-    private boolean createAccount(Scanner scan) {
+    public boolean createAccount(Scanner scan) {
+        // Take inputs from the user
         System.out.print("Enter your name: ");
         String name = scan.nextLine();
-
+    
+        System.out.print("Enter your age: ");
+        int age = scan.nextInt();
+        scan.nextLine();
+    
         System.out.print("Enter your email: ");
         String email = scan.nextLine();
-
+    
         System.out.print("Enter your phone number: ");
         String phoneNumber = scan.nextLine();
-
+    
         System.out.print("Enter your password: ");
         String password = scan.nextLine();
-
-        System.out.print("Enter your role (user, instructor): ");
+    
+        System.out.print("Enter your role (client, instructor): ");
         String role = scan.nextLine();
+    
+        // Check if the age is valid
+        if (age < 18) {
+            System.out.println("\nError: Age must be 18 or older to create an account.");
+            return false;
+        }
+    
+        // Insert into the accounts table
+        int accountId = account.insertIntoAccounts(name, age, email, phoneNumber, password);
+        if (accountId == -1) {
+            System.out.println("Error: Failed to create account in the database.");
+            return false;
+        }
+    
+        // Insert into the respective table (client or instructor)
+        if (role.equalsIgnoreCase("user") || role.equalsIgnoreCase("client")) {
+            return account.insertClient(accountId, 0);
+        } else if (role.equalsIgnoreCase("instructor")) {
+            System.out.print("Enter your availability (ex: [M-S] [12am-12pm]): ");
+            String availability = scan.nextLine();
 
-        return account.createAccount(name, email, phoneNumber, password, role);
+            System.out.print("Enter your speciality: ");
+            String speciality = scan.nextLine();
+            return account.insertInstructor(accountId, availability, speciality);
+        } else {
+            System.out.println("Error: Invalid role entered.");
+            return false;
+        }
     }
+
+
+
+        // METHOD TO HANDLE GUARDIANED ACCOUNT CREATION
+        public boolean createUnderageAccount(Scanner scan) {
+            // Take inputs from the user
+            System.out.print("Enter your email: ");
+            int guardianID = account.getAccountIdByEmail(scan.nextLine());
+            
+            System.out.print("Enter ward's name: ");
+            String name = scan.nextLine();
+        
+            System.out.print("Enter ward's age: ");
+            int age = scan.nextInt();
+            scan.nextLine();
+        
+            System.out.print("Enter ward's email: ");
+            String email = scan.nextLine();
+        
+            System.out.print("Enter ward's phone number: ");
+            String phoneNumber = scan.nextLine();
+        
+            System.out.print("Enter ward's password: ");
+            String password = scan.nextLine();
+        
+            // Insert into the accounts table
+            int accountId = account.insertIntoAccounts(name, age, email, phoneNumber, password);
+            if (accountId == -1) {
+                System.out.println("Error: Failed to create account in the database.");
+                return false;
+            }
+        
+            return account.insertClient(accountId, guardianID);
+        }
 
 
 

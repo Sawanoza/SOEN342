@@ -1,21 +1,84 @@
 DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS client;
+DROP TABLE IF EXISTS instructor;
+DROP TABLE IF EXISTS admin;
 
-CREATE TABLE accounts(
-    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE accounts (
+    accountId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
+    age INTEGER NOT NULL,
     email TEXT NOT NULL,
     phoneNumber TEXT NOT NULL,
-    password TEXT NOT NULL,
-    role TEXT NOT NULL CHECK(role IN ('user', 'admin', 'instructor'))
+    password TEXT NOT NULL
 );
 
-INSERT INTO accounts(name, email, phoneNumber, password, role) 
-VALUES ('admin', 'admin@admin.com', 1234567890, 'admin', 'admin');
-    
-INSERT INTO accounts(name, email, phoneNumber, password, role) 
-VALUES ('paul', 'paul@test.com', 1111111111, 'paul', 'instructor');
+CREATE TABLE client (
+    clientId INTEGER PRIMARY KEY AUTOINCREMENT,
+    accountId INTEGER,
+    guardianAccountId INTEGER,
+    FOREIGN KEY (accountId) REFERENCES accounts(accountId),
+    FOREIGN KEY (guardianAccountId) REFERENCES client(clientId)
+);
 
-INSERT INTO accounts(name, email, phoneNumber, password, role) 
-VALUES ('john', 'john@test.com', 2222222222, 'john', 'user');
+CREATE TABLE instructor (
+    instructorId INTEGER PRIMARY KEY AUTOINCREMENT,
+    accountId INTEGER NOT NULL,
+    availability TEXT,
+    speciality TEXT,
+    FOREIGN KEY (accountId) REFERENCES accounts(accountId)
+);
+
+CREATE TABLE admin (
+    adminId INTEGER PRIMARY KEY AUTOINCREMENT,
+    accountId INTEGER NOT NULL,
+    FOREIGN KEY (accountId) REFERENCES accounts(accountId)
+);
+
+
+
+INSERT INTO accounts(name, age, email, phoneNumber, password) 
+VALUES ('admin', 0, 'admin', '0000000000', 'admin');
+
+INSERT INTO accounts(name, age, email, phoneNumber, password) 
+VALUES ('instructor', 1, 'instructor', '1111111111', 'instructor');
+
+INSERT INTO accounts(name, age, email, phoneNumber, password) 
+VALUES ('paul', 30, 'paul@test.com', '1231231234', 'paul');
+
+INSERT INTO accounts(name, age, email, phoneNumber, password) 
+VALUES ('john', 25, 'john@test.com', '1231231234', 'john');
+
+
+
+
+INSERT INTO client(accountId, guardianAccountId)
+SELECT accountId, 0
+FROM accounts
+WHERE name = 'paul';  
+
+INSERT INTO client(accountId, guardianAccountId)
+SELECT accountId, 0
+FROM accounts
+WHERE name = 'john';  
+
+
+
+INSERT INTO instructor(accountId, availability, speciality)
+SELECT accountId, 'M-F 9am-5pm', 'Yoga'
+FROM accounts
+WHERE name = 'instructor';
+
+
+
+INSERT INTO admin(accountId)
+SELECT accountId
+FROM accounts
+WHERE name = 'admin';
 
 SELECT * FROM accounts;
+
+SELECT * FROM client;
+
+SELECT * FROM instructor;
+
+SELECT * FROM admin;
