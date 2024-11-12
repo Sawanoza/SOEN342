@@ -2,10 +2,13 @@ import java.util.Scanner;
 
 public class Console {
     private Account account;
+    private Offering offering;
 
     public Console() {
         this.account = new Account();
+        this.offering = new Offering();
     }
+
 
     public void startApplication() {
         // System.out.print("\033[H\033[2J");
@@ -118,10 +121,11 @@ public class Console {
                 System.out.println("4. View all instructor accounts");
                 System.out.println("5. Delete an account");
                 System.out.println("6. View all offerings");
-                System.out.println("7. View all lessons");
-                System.out.println("8. View bookings");
+                System.out.println("7. Add an offering");
+                System.out.println("8. View all lessons");
+                System.out.println("9. View bookings");
     
-                int choice = getUserChoice(scan, 1, 8);
+                int choice = getUserChoice(scan, 1, 9);
                 switch (choice) {
                     case 1:
                         loggedIn = false;
@@ -140,12 +144,15 @@ public class Console {
                         account.deleteAccount(Integer.parseInt(scan.nextLine()));
                         break;
                     case 6:
-                        // MISSING
+                        offering.getOfferings();
                         break;
                     case 7:
-                        // MISSING
+                        //offering.addOffering();
                         break;
                     case 8:
+                        // MISSING
+                        break;
+                    case 9:
                         // MISSING
                         break;
                     default:
@@ -237,10 +244,10 @@ public class Console {
         if (role.equalsIgnoreCase("user") || role.equalsIgnoreCase("client")) {
             return account.insertClient(accountId, 0);
         } else if (role.equalsIgnoreCase("instructor")) {
-            System.out.print("Enter your availability (ex: [M-S] [12am-12pm]): ");
+            System.out.print("Enter your availability (ex: Montreal, Toronto, Vancouver): ");
             String availability = scan.nextLine();
 
-            System.out.print("Enter your speciality: ");
+            System.out.print("Enter your speciality (ex: Yoga, Swimming, Tennis): ");
             String speciality = scan.nextLine();
             return account.insertInstructor(accountId, availability, speciality);
         } else {
@@ -282,6 +289,8 @@ public class Console {
         
             return account.insertClient(accountId, guardianID);
         }
+
+
 
 
 

@@ -46,35 +46,17 @@ CREATE TABLE admin (
 -------------------------------------------------------------------------
 -- WIP
 -------------------------------------------------------------------------
-CREATE TABLE offering (
-    offeringId INTEGER PRIMARY KEY AUTOINCREMENT,
-    lessonType TEXT CHECK (lessonType IN ('group', 'private')) NOT NULL,
-    lessonName TEXT NOT NULL,
-    isAvailable BOOLEAN NOT NULL,
-    instructorId INTEGER NOT NULL,
-    FOREIGN KEY (instructorId) REFERENCES instructor(instructorId)
-    -- ADD SCHEDULED FOREIGN KEY
-);
-
-CREATE TABLE booking (
-    bookingId INTEGER PRIMARY KEY AUTOINCREMENT,
-    clientId INTEGER NOT NULL,
-    offeringId INTEGER NOT NULL,
-    FOREIGN KEY (clientId) REFERENCES client(clientId),
-    FOREIGN KEY (offeringId) REFERENCES offering(offeringId)
-);
-
 CREATE TABLE location (
     locationId INTEGER PRIMARY KEY AUTOINCREMENT,
-    address TEXT NOT NULL
+    city TEXT NOT NULL
 );
 
 CREATE TABLE timeslot (
     timeslotId INTEGER PRIMARY KEY AUTOINCREMENT,
     day TEXT CHECK (day IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')) NOT NULL,
     date INTEGER CHECK (date BETWEEN 1 AND 31) NOT NULL,
-    startTime TIME NOT NULL, --HH:MM:SS
-    endTime TIME NOT NULL --HH:MM:SS
+    startTime TIME NOT NULL,
+    endTime TIME NOT NULL
 );
 
 CREATE TABLE schedule (
@@ -83,6 +65,26 @@ CREATE TABLE schedule (
     timeslotId INTEGER NOT NULL,
     FOREIGN KEY (locationId) REFERENCES location(locationId),
     FOREIGN KEY (timeslotId) REFERENCES timeslot(timeslotId)
+);
+
+CREATE TABLE offering (
+    offeringId INTEGER PRIMARY KEY AUTOINCREMENT,
+    lessonType TEXT CHECK (lessonType IN ('group', 'private')) NOT NULL,
+    lessonName TEXT NOT NULL,
+    capacity INTEGER NOT NULL,
+    isAvailable BOOLEAN NOT NULL,
+    instructorId INTEGER,
+    scheduleId INTEGER NOT NULL,
+    FOREIGN KEY (instructorId) REFERENCES instructor(instructorId),
+    FOREIGN KEY (scheduleId) REFERENCES schedule(scheduleId)
+);
+
+CREATE TABLE booking (
+    bookingId INTEGER PRIMARY KEY AUTOINCREMENT,
+    clientId INTEGER NOT NULL,
+    offeringId INTEGER NOT NULL,
+    FOREIGN KEY (clientId) REFERENCES client(clientId),
+    FOREIGN KEY (offeringId) REFERENCES offering(offeringId)
 );
 -------------------------------------------------------------------------
 
@@ -115,7 +117,7 @@ WHERE name = 'john';
 
 
 INSERT INTO instructor(accountId, availability, speciality)
-SELECT accountId, 'M-F 9am-5pm', 'Yoga'
+SELECT accountId, 'Vancouver', 'Yoga'
 FROM accounts
 WHERE name = 'instructor';
 
@@ -128,10 +130,26 @@ WHERE name = 'admin';
 
 
 -------------------------------------------------------------------------
-INSERT INTO offering(lessonType, lessonName, isAvailable, instructorId)
-SELECT 'group', 'Yoga', 'True', instructorId
-FROM instructor
-WHERE accountId = 2;
+INSERT INTO location(city)
+VALUES ('Montreal');
+
+INSERT INTO timeslot(day, date, startTime, endTime)
+VALUES ('Monday', 1, '8:00:00', '10:00:00');
+
+INSERT INTO schedule (locationId, timeslotId)
+SELECT l.locationId, t.timeslotId
+FROM location l, timeslot t
+WHERE l.locationId = 1 AND t.timeslotId = 1;
+
+INSERT INTO offering(lessonType, lessonName, capacity, isAvailable, instructorId, scheduleId)
+SELECT 'group', 'Yoga', 2, 'true', i.instructorId, s.scheduleId
+FROM instructor i, schedule s
+WHERE i.accountId = 2;
+
+INSERT INTO booking(clientId, offeringId)
+SELECT c.clientId, o.offeringId
+FROM client c, offering o
+WHERE c.clientId = 1 AND o.offeringId = 1;
 -------------------------------------------------------------------------
 
 
@@ -147,9 +165,8 @@ SELECT * FROM admin;
 
 -------------------------------------------------------------------------
 SELECT * from offering;
-SELECT * from booking;
-
 SELECT * from schedule;
 SELECT * from location;
 SELECT * from timeslot;
+SELECT * from booking;
 -------------------------------------------------------------------------
