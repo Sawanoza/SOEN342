@@ -3,6 +3,10 @@ DROP TABLE IF EXISTS client;
 DROP TABLE IF EXISTS instructor;
 DROP TABLE IF EXISTS admin;
 
+-- TEMP
+DROP TABLE IF EXISTS offering;
+DROP TABLE IF EXISTS booking;
+
 CREATE TABLE accounts (
     accountId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -23,8 +27,8 @@ CREATE TABLE client (
 CREATE TABLE instructor (
     instructorId INTEGER PRIMARY KEY AUTOINCREMENT,
     accountId INTEGER NOT NULL,
-    availability TEXT,
-    speciality TEXT,
+    availability TEXT NOT NULL,
+    speciality TEXT NOT NULL,
     FOREIGN KEY (accountId) REFERENCES accounts(accountId)
 );
 
@@ -32,6 +36,26 @@ CREATE TABLE admin (
     adminId INTEGER PRIMARY KEY AUTOINCREMENT,
     accountId INTEGER NOT NULL,
     FOREIGN KEY (accountId) REFERENCES accounts(accountId)
+);
+
+-- TEMPORARY
+CREATE TABLE offering (
+    offeringId INTEGER PRIMARY KEY AUTOINCREMENT,
+    status TEXT NOT NULL,
+    lessonType TEXT NOT NULL,
+    available BOOLEAN NOT NULL,
+    instructorId INTEGER NOT NULL,
+    FOREIGN KEY (instructorId) REFERENCES instructor(instructorId)
+    -- ADD SCHEDULED FOREIGN KEY
+);
+
+-- TEMP
+CREATE TABLE booking (
+    bookingId INTEGER PRIMARY KEY AUTOINCREMENT,
+    clientId INTEGER NOT NULL,
+    offeringId INTEGER NOT NULL,
+    FOREIGN KEY (clientId) REFERENCES client(clientId),
+    FOREIGN KEY (offeringId) REFERENCES offering(offeringId)
 );
 
 
@@ -75,6 +99,16 @@ SELECT accountId
 FROM accounts
 WHERE name = 'admin';
 
+
+-- TEMP
+INSERT INTO offering(status, lessonType, available, instructorId)
+SELECT 'empty', 'Group', 'True', instructorId
+FROM instructor
+WHERE accountId = 2;
+
+
+
+
 SELECT * FROM accounts;
 
 SELECT * FROM client;
@@ -82,3 +116,8 @@ SELECT * FROM client;
 SELECT * FROM instructor;
 
 SELECT * FROM admin;
+
+
+-- TEMP
+SELECT * from offering;
+SELECT * from booking;
