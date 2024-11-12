@@ -3,9 +3,14 @@ DROP TABLE IF EXISTS client;
 DROP TABLE IF EXISTS instructor;
 DROP TABLE IF EXISTS admin;
 
--- TEMP
+-------------------------------------------------------------------------
 DROP TABLE IF EXISTS offering;
 DROP TABLE IF EXISTS booking;
+
+DROP TABLE IF EXISTS schedule;
+DROP TABLE IF EXISTS location;
+DROP TABLE IF EXISTS timeslot;
+-------------------------------------------------------------------------
 
 CREATE TABLE accounts (
     accountId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -38,18 +43,19 @@ CREATE TABLE admin (
     FOREIGN KEY (accountId) REFERENCES accounts(accountId)
 );
 
--- TEMPORARY
+-------------------------------------------------------------------------
+-- WIP
+-------------------------------------------------------------------------
 CREATE TABLE offering (
     offeringId INTEGER PRIMARY KEY AUTOINCREMENT,
-    status TEXT NOT NULL,
-    lessonType TEXT NOT NULL,
-    available BOOLEAN NOT NULL,
+    lessonType TEXT CHECK (lessonType IN ('group', 'private')) NOT NULL,
+    lessonName TEXT NOT NULL,
+    isAvailable BOOLEAN NOT NULL,
     instructorId INTEGER NOT NULL,
     FOREIGN KEY (instructorId) REFERENCES instructor(instructorId)
     -- ADD SCHEDULED FOREIGN KEY
 );
 
--- TEMP
 CREATE TABLE booking (
     bookingId INTEGER PRIMARY KEY AUTOINCREMENT,
     clientId INTEGER NOT NULL,
@@ -58,6 +64,27 @@ CREATE TABLE booking (
     FOREIGN KEY (offeringId) REFERENCES offering(offeringId)
 );
 
+CREATE TABLE location (
+    locationId INTEGER PRIMARY KEY AUTOINCREMENT,
+    address TEXT NOT NULL
+);
+
+CREATE TABLE timeslot (
+    timeslotId INTEGER PRIMARY KEY AUTOINCREMENT,
+    day TEXT CHECK (day IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')) NOT NULL,
+    date INTEGER CHECK (date BETWEEN 1 AND 31) NOT NULL,
+    startTime TIME NOT NULL, --HH:MM:SS
+    endTime TIME NOT NULL --HH:MM:SS
+);
+
+CREATE TABLE schedule (
+    scheduleId INTEGER PRIMARY KEY AUTOINCREMENT,
+    locationId INTEGER NOT NULL,
+    timeslotId INTEGER NOT NULL,
+    FOREIGN KEY (locationId) REFERENCES location(locationId),
+    FOREIGN KEY (timeslotId) REFERENCES timeslot(timeslotId)
+);
+-------------------------------------------------------------------------
 
 
 INSERT INTO accounts(name, age, email, phoneNumber, password) 
@@ -100,12 +127,12 @@ FROM accounts
 WHERE name = 'admin';
 
 
--- TEMP
-INSERT INTO offering(status, lessonType, available, instructorId)
-SELECT 'empty', 'Group', 'True', instructorId
+-------------------------------------------------------------------------
+INSERT INTO offering(lessonType, lessonName, isAvailable, instructorId)
+SELECT 'group', 'Yoga', 'True', instructorId
 FROM instructor
 WHERE accountId = 2;
-
+-------------------------------------------------------------------------
 
 
 
@@ -118,6 +145,11 @@ SELECT * FROM instructor;
 SELECT * FROM admin;
 
 
--- TEMP
+-------------------------------------------------------------------------
 SELECT * from offering;
 SELECT * from booking;
+
+SELECT * from schedule;
+SELECT * from location;
+SELECT * from timeslot;
+-------------------------------------------------------------------------
