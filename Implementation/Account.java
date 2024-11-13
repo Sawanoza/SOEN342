@@ -310,7 +310,6 @@ public class Account {
     // ====================================================================================================
     // METHOD TO RETRIEVE ACCOUNT ID WITH EMAIL
     // ====================================================================================================
-
     public int getAccountIdByEmail(String email) {
         String query = "SELECT accountId FROM accounts WHERE email = ?";
     
@@ -332,6 +331,5 @@ public class Account {
             return -1;
         }
     }
-
     // ====================================================================================================
 }

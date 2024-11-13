@@ -131,20 +131,51 @@ WHERE name = 'admin';
 
 -------------------------------------------------------------------------
 INSERT INTO location(city)
-VALUES ('Montreal');
+VALUES ('Montreal'),
+       ('Toronto'),
+       ('Vancouver');
 
 INSERT INTO timeslot(day, date, startTime, endTime)
-VALUES ('Monday', 1, '8:00:00', '10:00:00');
+VALUES ('Monday', 1, '08:00:00', '10:00:00'),
+       ('Wednesday', 2, '13:00:00', '15:00:00'),
+       ('Friday', 3, '14:00:00', '14:30:00');
+
+
 
 INSERT INTO schedule (locationId, timeslotId)
 SELECT l.locationId, t.timeslotId
 FROM location l, timeslot t
 WHERE l.locationId = 1 AND t.timeslotId = 1;
 
+INSERT INTO schedule (locationId, timeslotId)
+SELECT l.locationId, t.timeslotId
+FROM location l, timeslot t
+WHERE l.locationId = 2 AND t.timeslotId = 2;
+
+INSERT INTO schedule (locationId, timeslotId)
+SELECT l.locationId, t.timeslotId
+FROM location l, timeslot t
+WHERE l.locationId = 3 AND t.timeslotId = 3;
+
+
+
+
 INSERT INTO offering(lessonType, lessonName, capacity, isAvailable, instructorId, scheduleId)
 SELECT 'group', 'Yoga', 2, 'true', i.instructorId, s.scheduleId
 FROM instructor i, schedule s
-WHERE i.accountId = 2;
+WHERE i.accountId = 2 AND s.scheduleId = 1;
+
+INSERT INTO offering(lessonType, lessonName, capacity, isAvailable, instructorId, scheduleId)
+SELECT 'group', 'Volleyball', 5, 'true', 0, s.scheduleId
+FROM schedule s
+WHERE s.scheduleId = 2;
+
+INSERT INTO offering(lessonType, lessonName, capacity, isAvailable, instructorId, scheduleId)
+SELECT 'private', 'Swimming', 1, 'true', 0, s.scheduleId
+FROM schedule s
+WHERE s.scheduleId = 3;
+
+
 
 INSERT INTO booking(clientId, offeringId)
 SELECT c.clientId, o.offeringId
