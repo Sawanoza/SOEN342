@@ -1,5 +1,14 @@
 import java.util.Scanner;
 
+import Accounts.Account;
+import Accounts.Client;
+import Accounts.Instructor;
+import Bookings.Booking;
+import Schedule.Location;
+import Schedule.Schedule;
+import Schedule.TimeSlot;
+import LessonsAndOfferings.Offering;
+
 public class Console {
     private Account account;
     private Offering offering;
@@ -61,7 +70,7 @@ public class Console {
             }
             // --------------- 1.2 CREATE ACCOUNT ---------------
             else if (menuChoice == 2) {
-                boolean accountCreated = createAccount(scan);
+                boolean accountCreated = account.createAccount(scan);
                 if (accountCreated) {
                     System.out.println("\nAccount created successfully!");
                 } else {
@@ -100,7 +109,7 @@ public class Console {
                     loggedIn = false;
                     break;
                 case 2:
-                    createUnderageAccount(scan);
+                    client.createUnderageAccount(scan);
                     break;
                 case 3:
                     offering.getAvailableLessonsForClient(accountId);
@@ -254,7 +263,10 @@ public class Console {
     // ====================================================================================================
 
 
+    
+    // ====================================================================================================
     // METHOD TO HANDLE USER LOGIN
+    // ====================================================================================================
     private String login(Scanner scan) {
         System.out.print("Enter your email: ");
         String email = scan.nextLine();
@@ -274,95 +286,7 @@ public class Console {
             return null;
         }
     }
-
-
-    // METHOD TO HANDLE ACCOUNT CREATION
-    public boolean createAccount(Scanner scan) {
-        // Take inputs from the user
-        System.out.print("Enter your name: ");
-        String name = scan.nextLine();
-    
-        System.out.print("Enter your age: ");
-        int age = scan.nextInt();
-        scan.nextLine();
-    
-        System.out.print("Enter your email: ");
-        String email = scan.nextLine();
-    
-        System.out.print("Enter your phone number: ");
-        String phoneNumber = scan.nextLine();
-    
-        System.out.print("Enter your password: ");
-        String password = scan.nextLine();
-    
-        System.out.print("Enter your role (client, instructor): ");
-        String role = scan.nextLine();
-    
-        // Check if the age is valid
-        if (age < 18) {
-            System.out.println("\nError: Age must be 18 or older to create an account.");
-            return false;
-        }
-    
-        // Insert into the accounts table
-        int accountId = account.insertIntoAccounts(name, age, email, phoneNumber, password);
-        if (accountId == -1) {
-            System.out.println("Error: Failed to create account in the database.");
-            return false;
-        }
-    
-        // Insert into the respective table (client or instructor)
-        if (role.equalsIgnoreCase("user") || role.equalsIgnoreCase("client")) {
-            return account.insertClient(accountId, 0);
-        } else if (role.equalsIgnoreCase("instructor")) {
-            System.out.print("Enter your availability (ex: Montreal, Toronto, Vancouver): ");
-            String availability = scan.nextLine();
-
-            System.out.print("Enter your speciality (ex: Yoga, Swimming, Tennis): ");
-            String speciality = scan.nextLine();
-            return account.insertInstructor(accountId, availability, speciality);
-        } else {
-            System.out.println("Error: Invalid role entered.");
-            return false;
-        }
-    }
-
-
-
-        // METHOD TO HANDLE GUARDIANED ACCOUNT CREATION
-        public boolean createUnderageAccount(Scanner scan) {
-            // Take inputs from the user
-            System.out.print("Enter your email: ");
-            int guardianID = account.getAccountIdByEmail(scan.nextLine());
-            
-            System.out.print("Enter ward's name: ");
-            String name = scan.nextLine();
-        
-            System.out.print("Enter ward's age: ");
-            int age = scan.nextInt();
-            scan.nextLine();
-        
-            System.out.print("Enter ward's email: ");
-            String email = scan.nextLine();
-        
-            System.out.print("Enter ward's phone number: ");
-            String phoneNumber = scan.nextLine();
-        
-            System.out.print("Enter ward's password: ");
-            String password = scan.nextLine();
-        
-            // Insert into the accounts table
-            int accountId = account.insertIntoAccounts(name, age, email, phoneNumber, password);
-            if (accountId == -1) {
-                System.out.println("Error: Failed to create account in the database.");
-                return false;
-            }
-        
-            return account.insertClient(accountId, guardianID);
-        }
-
-
-
+    // ====================================================================================================
 
 
 

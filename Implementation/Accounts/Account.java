@@ -1,8 +1,10 @@
+package Accounts;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Scanner;
 import java.sql.SQLException;
 
 public class Account {
@@ -178,6 +180,61 @@ public class Account {
 
     // ====================================================================================================
     // METHOD TO HANDLE ACCOUNT CREATION
+    // ====================================================================================================
+    public boolean createAccount(Scanner scan) {
+        System.out.print("Enter your name: ");
+        String name = scan.nextLine();
+    
+        System.out.print("Enter your age: ");
+        int age = scan.nextInt();
+        scan.nextLine();
+    
+        System.out.print("Enter your email: ");
+        String email = scan.nextLine();
+    
+        System.out.print("Enter your phone number: ");
+        String phoneNumber = scan.nextLine();
+    
+        System.out.print("Enter your password: ");
+        String password = scan.nextLine();
+    
+        System.out.print("Enter your role (client, instructor): ");
+        String role = scan.nextLine();
+    
+        // Check if the age is valid
+        if (age < 18) {
+            System.out.println("\nError: Age must be 18 or older to create an account.");
+            return false;
+        }
+    
+        // Insert into the accounts table
+        int accountId = insertIntoAccounts(name, age, email, phoneNumber, password);
+        if (accountId == -1) {
+            System.out.println("Error: Failed to create account in the database.");
+            return false;
+        }
+    
+        // Insert into the respective table (client or instructor)
+        if (role.equalsIgnoreCase("user") || role.equalsIgnoreCase("client")) {
+            return insertClient(accountId, 0);
+        } else if (role.equalsIgnoreCase("instructor")) {
+            System.out.print("Enter your availability (ex: Montreal, Toronto, Vancouver): ");
+            String availability = scan.nextLine();
+
+            System.out.print("Enter your speciality (ex: Yoga, Swimming, Tennis): ");
+            String speciality = scan.nextLine();
+            return insertInstructor(accountId, availability, speciality);
+        } else {
+            System.out.println("Error: Invalid role entered.");
+            return false;
+        }
+    }
+    // ====================================================================================================
+
+
+
+    // ====================================================================================================
+    // METHOD TO HANDLE INSERTION INTO CORRECT ACCOUNT TYPE
     // ====================================================================================================
 
     // Insert into the accounts table and return the generated accountId

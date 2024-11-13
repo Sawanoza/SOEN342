@@ -1,38 +1,39 @@
+package Schedule;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class TimeSlot {
+public class Schedule {
     
     private String url = "jdbc:sqlite:Implementation/mydb.db";
 
     // ====================================================================================================
-    // METHOD TO GET ALL TIMESLOT
+    // METHOD TO GET ALL SCHEDULES
     // ====================================================================================================
-    public void getAllTimeslots() {
-        String query = "SELECT t.timeslotId, t.day, t.date, t.startTime, t.endTime " +
-                    "FROM timeslot t";
+    public void getAllSchedules() {
+        String query = "SELECT s.scheduleId, t.day, t.date, t.startTime, t.endTime, l.city " +
+                    "FROM schedule s " +
+                    "JOIN timeslot t ON s.timeslotId = t.timeslotId " +
+                    "JOIN location l ON s.locationId = l.locationId";
 
         try (Connection conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(query)) {
             
-            // Print table header
-            System.out.printf("%-15s %-10s %-10s %-10s %-10s%n", "Timeslot ID", "Day", "Date", "Start Time", "End Time");
-            System.out.println("------------------------------------------------------------");
+            System.out.printf("%-10s %-10s %-10s %-10s %-10s %-20s%n", "Schedule ID", "Day", "Date", "Start Time", "End Time", "City");
+            System.out.println("------------------------------------------------------------------");
 
-            // Iterate through the result set and print each timeslot
             while (rs.next()) {
-                int timeslotId = rs.getInt("timeslotId");
+                int scheduleId = rs.getInt("scheduleId");
                 String day = rs.getString("day");
                 int date = rs.getInt("date");
                 String startTime = rs.getString("startTime");
                 String endTime = rs.getString("endTime");
+                String city = rs.getString("city");
 
-                // Print timeslot data in formatted columns
-                System.out.printf("%-15d %-10s %-10d %-10s %-10s%n", timeslotId, day, date, startTime, endTime);
+                System.out.printf("%-10d %-10s %-10d %-10s %-10s %-20s%n", scheduleId, day, date, startTime, endTime, city);
             }
         } catch (SQLException e) {
             System.out.println("SQL Error: " + e.getMessage());

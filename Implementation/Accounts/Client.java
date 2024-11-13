@@ -1,3 +1,4 @@
+package Accounts;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -5,10 +6,53 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class Client {
+public class Client extends Account {
+
+    private Account account;
+
+    public Client() {
+        this.account = new Account();
+    }
     
     private String url = "jdbc:sqlite:Implementation/mydb.db";
     
+    // ====================================================================================================
+    // METHOD TO HANDLE GUARDIANED ACCOUNT CREATION
+    // ====================================================================================================
+    public boolean createUnderageAccount(Scanner scan) {
+        // Take inputs from the user
+        System.out.print("Enter your email: ");
+        int guardianID = account.getAccountIdByEmail(scan.nextLine());
+        
+        System.out.print("Enter ward's name: ");
+        String name = scan.nextLine();
+    
+        System.out.print("Enter ward's age: ");
+        int age = scan.nextInt();
+        scan.nextLine();
+    
+        System.out.print("Enter ward's email: ");
+        String email = scan.nextLine();
+    
+        System.out.print("Enter ward's phone number: ");
+        String phoneNumber = scan.nextLine();
+    
+        System.out.print("Enter ward's password: ");
+        String password = scan.nextLine();
+    
+        // Insert into the accounts table
+        int accountId = account.insertIntoAccounts(name, age, email, phoneNumber, password);
+        if (accountId == -1) {
+            System.out.println("Error: Failed to create account in the database.");
+            return false;
+        }
+    
+        return account.insertClient(accountId, guardianID);
+    }
+    // ====================================================================================================
+
+
+
     // ====================================================================================================
     // METHOD TO RETRIEVE ALL LESSONS (FOR CLIENTS)
     // ====================================================================================================
