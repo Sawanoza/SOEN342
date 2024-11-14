@@ -112,10 +112,10 @@ public class Console {
                     offering.getAvailableLessonsForClient(accountId);
                     break;
                 case 4:
-                    client.displayClientLessons(accountId);
+                    client.viewBookings(accountId);
                     break;
                 case 5:
-                    client.registerForLesson(scan, accountId);
+                    client.registerForOffering(scan, accountId);
                     break;
                 case 6:
                     booking.cancelBooking(scan);

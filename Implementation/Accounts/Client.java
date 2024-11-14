@@ -56,7 +56,7 @@ public class Client extends Account {
     // ====================================================================================================
     // METHOD TO RETRIEVE ALL LESSONS (FOR CLIENTS)
     // ====================================================================================================
-    public void displayClientLessons(int accountId) {
+    public void viewBookings(int accountId) {
         // Step 1: Get the clientId from the accountId
         int clientId = getClientIdFromAccount(accountId);
         
@@ -133,9 +133,9 @@ public class Client extends Account {
 
 
     // ====================================================================================================
-    // METHOD TO REGISTER TO A LESSON
+    // METHOD TO REGISTER TO AN OFFERING
     // ====================================================================================================
-    public boolean registerForLesson(Scanner scan, int accountId) {
+    public boolean registerForOffering(Scanner scan, int accountId) {
         // Step 1: Get the clientId from the accountId
     int clientId = getClientIdFromAccount(accountId);
     
