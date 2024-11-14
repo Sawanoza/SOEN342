@@ -64,35 +64,35 @@ public class Offering {
     // ====================================================================================================
     public void addOffering(Scanner scan) {
         int capacity;
-        
+    
         System.out.print("Enter lesson type (group/private): ");
         String lessonType = scan.nextLine();
-        
+    
         System.out.print("Enter lesson name (e.g., Yoga, Swimming, Tennis, etc.): ");
         String lessonName = scan.nextLine();
-        
+    
         if (lessonType.equals("private")) {
             capacity = 1;
         } else {
             System.out.print("Enter capacity (number of participants): ");
             capacity = Integer.parseInt(scan.nextLine());
         }
-        
+    
         System.out.print("Enter the day of the lesson (e.g., Monday, Tuesday, etc.): ");
         String day = scan.nextLine();
-        
+    
         System.out.print("Enter the date of the lesson (1-31): ");
         int date = Integer.parseInt(scan.nextLine()); 
-        
+    
         System.out.print("Enter the start time of the lesson (e.g., 09:00:00): ");
         String startTime = scan.nextLine();
-        
+    
         System.out.print("Enter the end time of the lesson (e.g., 10:00:00): ");
         String endTime = scan.nextLine();
-        
+    
         System.out.print("Enter the city where the lesson will take place: ");
         String city = scan.nextLine();
-        
+    
         String checkQuery = "SELECT COUNT(*) AS count " +
                             "FROM offering o " +
                             "JOIN schedule s ON o.scheduleId = s.scheduleId " +
@@ -100,23 +100,25 @@ public class Offering {
                             "JOIN location l ON s.locationId = l.locationId " +
                             "WHERE l.city = ? AND t.day = ? AND t.date = ? " +
                             "AND ((t.startTime <= ? AND t.endTime > ?) OR (t.startTime < ? AND t.endTime >= ?))";
-                            
-        String insertLocationQuery = "INSERT OR IGNORE INTO location(city) VALUES (?)";
-        
+    
+        String getLocationQuery = "SELECT locationId FROM location WHERE city = ?";
+        String insertLocationQuery = "INSERT INTO location(city) VALUES (?)";
+    
         String insertTimeSlotQuery = "INSERT INTO timeslot(day, date, startTime, endTime) VALUES (?, ?, ?, ?)";
-        String insertScheduleQuery = "INSERT INTO schedule(locationId, timeslotId) VALUES ((SELECT locationId FROM location WHERE city = ?), ?)";
-        
+        String insertScheduleQuery = "INSERT INTO schedule(locationId, timeslotId) VALUES (?, ?)";
+    
         String insertOfferingQuery = "INSERT INTO offering(lessonType, lessonName, capacity, isAvailable, instructorId, scheduleId) " +
                                      "VALUES (?, ?, ?, 'true', NULL, ?)";
     
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
-             PreparedStatement insertLocationStmt = conn.prepareStatement(insertLocationQuery);
+             PreparedStatement getLocationStmt = conn.prepareStatement(getLocationQuery);
+             PreparedStatement insertLocationStmt = conn.prepareStatement(insertLocationQuery, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement insertTimeSlotStmt = conn.prepareStatement(insertTimeSlotQuery, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement insertScheduleStmt = conn.prepareStatement(insertScheduleQuery, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement insertOfferingStmt = conn.prepareStatement(insertOfferingQuery)) {
-            
-            //check for time conflicts
+    
+            // Check for time conflicts
             checkStmt.setString(1, city);
             checkStmt.setString(2, day);
             checkStmt.setInt(3, date);
@@ -131,41 +133,54 @@ public class Offering {
                 return;
             }
     
-            //insert city into location if it does not exist
-            insertLocationStmt.setString(1, city);
-            insertLocationStmt.executeUpdate();
-            
-            //insert into timeslot and get generated timeslotId
+            // Check if location already exists
+            int locationId;
+            getLocationStmt.setString(1, city);
+            ResultSet locationRs = getLocationStmt.executeQuery();
+    
+            if (locationRs.next()) {
+                locationId = locationRs.getInt("locationId"); // Use existing locationId
+            } else {
+                // Insert city into location if it does not exist and retrieve the new locationId
+                insertLocationStmt.setString(1, city);
+                insertLocationStmt.executeUpdate();
+                try (ResultSet locationKeys = insertLocationStmt.getGeneratedKeys()) {
+                    locationKeys.next();
+                    locationId = locationKeys.getInt(1);
+                }
+            }
+    
+            // Insert into timeslot and get generated timeslotId
             insertTimeSlotStmt.setString(1, day);
             insertTimeSlotStmt.setInt(2, date);
             insertTimeSlotStmt.setString(3, startTime);
             insertTimeSlotStmt.setString(4, endTime);
             insertTimeSlotStmt.executeUpdate();
-            
+    
             int timeslotId;
             try (ResultSet timeSlotKeys = insertTimeSlotStmt.getGeneratedKeys()) {
                 timeSlotKeys.next();
                 timeslotId = timeSlotKeys.getInt(1);
             }
     
-            //insert into schedule with locationId and timeslotId, then get scheduleId
-            insertScheduleStmt.setString(1, city);
+            // Insert into schedule with locationId and timeslotId, then get scheduleId
+            insertScheduleStmt.setInt(1, locationId);
             insertScheduleStmt.setInt(2, timeslotId);
             insertScheduleStmt.executeUpdate();
-            
+    
             int scheduleId;
             try (ResultSet scheduleKeys = insertScheduleStmt.getGeneratedKeys()) {
                 scheduleKeys.next();
                 scheduleId = scheduleKeys.getInt(1);
             }
     
-            //insert the new offering
+            // Insert the new offering
             insertOfferingStmt.setString(1, lessonType);
             insertOfferingStmt.setString(2, lessonName);
             insertOfferingStmt.setInt(3, capacity);
             insertOfferingStmt.setInt(4, scheduleId);
             insertOfferingStmt.executeUpdate();
-            
+    
             System.out.println("Offering added successfully.");
     
         } catch (SQLException e) {

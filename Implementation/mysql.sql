@@ -53,7 +53,7 @@ CREATE TABLE location (
 
 CREATE TABLE timeslot (
     timeslotId INTEGER PRIMARY KEY AUTOINCREMENT,
-    day TEXT CHECK (day IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')) NOT NULL,
+    day TEXT CHECK (day IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')) NOT NULL,
     date INTEGER CHECK (date BETWEEN 1 AND 31) NOT NULL,
     startTime TIME NOT NULL,
     endTime TIME NOT NULL
