@@ -44,7 +44,6 @@ CREATE TABLE admin (
 );
 
 -------------------------------------------------------------------------
--- WIP
 -------------------------------------------------------------------------
 CREATE TABLE location (
     locationId INTEGER PRIMARY KEY AUTOINCREMENT,
