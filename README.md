@@ -15,10 +15,5 @@ Aly Hussein (Aly-Hussein)
 Marc-Yves Malchev (Sawanoza) 40265238 - marc_a00@hotmail.com  
 Mohamed Gueye (MomoG221) 40247476 - mohamed.gueye88@gmail.com
 
-## Additional Documentation:
-See [Wiki]()
-You can find:
-- (WIP)
-
 ## Demonstration Video
-- (WIP)
+https://drive.google.com/file/d/1FsSvRGUgvlOcdjs1rK4MICacFvHm7yd_/view?usp=sharing
