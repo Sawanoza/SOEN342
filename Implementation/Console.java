@@ -41,7 +41,8 @@ public class Console {
         while (applicationLoop) {
             System.out.println("\n1. Log In");
             System.out.println("2. Create an account");
-            System.out.println("3. Quit the application");
+            System.out.println("3. View available lessons");
+            System.out.println("4. Quit the application");
             int menuChoice = getUserChoice(scan, 1, 3);
 
             // --------------- 1.1 LOGIN ---------------
@@ -75,7 +76,11 @@ public class Console {
                     System.out.println("Returning to main menu...");
                 }
             }
-            // --------------- 1.3 QUIT APPLICATION ---------------
+            // --------------- 1.3 VIEW AVAILABLE LESSONS ---------------
+            else if (menuChoice == 3) {
+                offering.getLessons();
+            }
+            // --------------- 1.4 QUIT APPLICATION ---------------
             else {
                 break;
             }
