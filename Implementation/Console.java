@@ -6,7 +6,6 @@ import Accounts.Instructor;
 import Bookings.Booking;
 import Schedule.Location;
 import Schedule.Schedule;
-import Schedule.TimeSlot;
 import LessonsAndOfferings.Offering;
 
 public class Console {
@@ -15,7 +14,6 @@ public class Console {
     private Booking booking;
     private Location location;
     private Schedule schedule;
-    private TimeSlot timeslot;
     private Instructor instructor;
     private Client client;
 
@@ -27,7 +25,6 @@ public class Console {
         this.booking = new Booking();
         this.location = new Location();
         this.schedule = new Schedule();
-        this.timeslot = new TimeSlot();
         this.instructor = new Instructor();
         this.client = new Client();
     }
@@ -95,7 +92,7 @@ public class Console {
     private void clientMenu(Scanner scan) {
         boolean loggedIn = true;
         while (loggedIn) {
-            System.out.println("\nUser Menu:");
+            System.out.println("\nClient Menu:");
             System.out.println("1. Log Out");
             System.out.println("2. Become a Guardian");
             System.out.println("3. View available lessons");
@@ -186,9 +183,8 @@ public class Console {
             System.out.println("10. Cancel a booking");
             System.out.println("11. View all locations");
             System.out.println("12. View all schedules");
-            System.out.println("13. View all timeslots");
     
-            int choice = getUserChoice(scan, 1, 13);
+            int choice = getUserChoice(scan, 1, 12);
             switch (choice) {
                 case 1:
                     loggedIn = false;
@@ -227,9 +223,6 @@ public class Console {
                 case 12:
                     schedule.getAllSchedules();
                     break;
-                case 13:
-                    timeslot.getAllTimeslots();
-                    break;
                 default:
                     break;
                 }
@@ -263,7 +256,7 @@ public class Console {
     // ====================================================================================================
 
 
-    
+
     // ====================================================================================================
     // METHOD TO HANDLE USER LOGIN
     // ====================================================================================================

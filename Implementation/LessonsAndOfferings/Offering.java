@@ -108,7 +108,7 @@ public class Offering {
         String insertScheduleQuery = "INSERT INTO schedule(locationId, timeslotId) VALUES (?, ?)";
     
         String insertOfferingQuery = "INSERT INTO offering(lessonType, lessonName, capacity, isAvailable, instructorId, scheduleId) " +
-                                     "VALUES (?, ?, ?, 'true', NULL, ?)";
+                                     "VALUES (?, ?, ?, 'true', 0, ?)";
     
         try (Connection conn = DriverManager.getConnection(url);
              PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
