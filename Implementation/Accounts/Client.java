@@ -191,9 +191,35 @@ public class Client extends Account {
         System.out.println("SQL Error: " + e.getMessage());
         return false;
     }
-}
+    }
+    // ====================================================================================================
 
 
+    // ====================================================================================================
+    // METHOD TO VERIFY IF CLIENT HAS A GUARDIAN
+    // ====================================================================================================
+    public boolean hasGuardian(int accountId) {
+        String query = "SELECT guardianAccountId FROM client WHERE accountId = ?";
+        
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+    
+            stmt.setInt(1, accountId);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int guardianAccountId = rs.getInt("guardianAccountId");
+                    // Check if guardianAccountId is not 0
+                    return guardianAccountId != 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+        }
+        
+        return false;
+    }
+    // ====================================================================================================
 
 
 

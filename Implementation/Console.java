@@ -43,7 +43,7 @@ public class Console {
             System.out.println("2. Create an account");
             System.out.println("3. View available lessons");
             System.out.println("4. Quit the application");
-            int menuChoice = getUserChoice(scan, 1, 3);
+            int menuChoice = getUserChoice(scan, 1, 4);
 
             // --------------- 1.1 LOGIN ---------------
             if (menuChoice == 1) {
@@ -99,7 +99,9 @@ public class Console {
         while (loggedIn) {
             System.out.println("\nClient Menu:");
             System.out.println("1. Log Out");
-            System.out.println("2. Become a Guardian");
+            if (!client.hasGuardian(accountId)) {
+                System.out.println("2. Become a Guardian");
+            }
             System.out.println("3. View available lessons");
             System.out.println("4. View lessons registered for");
             System.out.println("5. Register to a lesson");
