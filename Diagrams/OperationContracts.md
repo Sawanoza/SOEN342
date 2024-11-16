@@ -43,7 +43,6 @@ ss
 - The `offering` record in the database will have the `instructorId` updated with the instructor's ID if the assignment was successful.
 - If the assignment failed (due to the offering already having an instructor or being invalid), no changes will be made to the `offering` table.
 
-Here’s an operation contract for your `getLessons` method:
 
 # Operation Contract #3: `getLessons()`
 
